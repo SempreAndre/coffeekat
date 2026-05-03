@@ -128,11 +128,18 @@ app.use((err, req, res, next) => {
 // INICIALIZAÇÃO
 // ============================================
 
-app.listen(PORT, () => {
-  console.log('')
-  console.log('  ☕ Coffee Kat Backend')
-  console.log(`  ➜  Servidor:  http://localhost:${PORT}`)
-  console.log(`  ➜  Health:    http://localhost:${PORT}/api/health`)
-  console.log(`  ➜  Ambiente:  ${process.env.NODE_ENV || 'development'}`)
-  console.log('')
-})
+// Vercel Serverless Functions não precisam do app.listen, eles exportam o app diretamente.
+// Por isso, só chamamos o listen se não estiver rodando no Vercel.
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log('')
+    console.log('  ☕ Coffee Kat Backend')
+    console.log(`  ➜  Servidor:  http://localhost:${PORT}`)
+    console.log(`  ➜  Health:    http://localhost:${PORT}/api/health`)
+    console.log(`  ➜  Ambiente:  ${process.env.NODE_ENV || 'development'}`)
+    console.log('')
+  })
+}
+
+// Exporta o app para o Vercel Serverless usar
+export default app
