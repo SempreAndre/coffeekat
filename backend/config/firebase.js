@@ -23,7 +23,7 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
     console.log('✅ Credenciais Firebase carregadas via variável de ambiente')
   } catch (error) {
     console.error('❌ Erro ao parsear FIREBASE_SERVICE_ACCOUNT_JSON:', error.message)
-    process.exit(1)
+    // process.exit(1) removido para não derrubar o worker do Vercel imediatamente
   }
 }
 // Modo 2: Credenciais via arquivo JSON (desenvolvimento local)
@@ -37,14 +37,26 @@ else {
   } catch (error) {
     console.error('❌ Erro ao carregar credenciais do Firebase:', error.message)
     console.error('   A variável FIREBASE_SERVICE_ACCOUNT_JSON não foi encontrada e o arquivo local também não.')
-    process.exit(1)
   }
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-})
+// Corrige problema comum no Vercel onde os \n da private_key são escapados como \\n
+if (serviceAccount && serviceAccount.private_key) {
+  serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n')
+}
 
-export const db = admin.firestore()
-export const auth = admin.auth()
+try {
+  if (serviceAccount) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    })
+  } else {
+    console.warn("⚠️ Firebase Admin não foi inicializado (credenciais ausentes). As APIs falharão.")
+  }
+} catch (error) {
+  console.error("❌ Erro CRÍTICO ao inicializar o Firebase Admin:", error.message)
+}
+
+export const db = admin.apps.length ? admin.firestore() : null
+export const auth = admin.apps.length ? admin.auth() : null
 export default admin
