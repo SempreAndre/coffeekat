@@ -1,3 +1,6 @@
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
 /* ============================================
@@ -59,8 +62,6 @@
   --shadow-hover: 0 8px 24px rgba(44, 26, 14, 0.2);
 }
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* --- Base Styles --- */
 body {
