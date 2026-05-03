@@ -1,0 +1,28 @@
+{
+  "name": "coffeekat-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Frontend da loja Coffee Kat - E-commerce de cafeteria",
+  "scripts": {
+    "dev": "vite",
+    "dev:back": "node --watch backend/server.js",
+    "dev:full": "concurrently -n FRONT,BACK -c cyan,yellow \"npm run dev\" \"npm run dev:back\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "vite build && firebase deploy --only hosting:coffeekat"
+  },
+  "dependencies": {
+    "firebase": "^12.12.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.14.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.4",
+    "@vitejs/plugin-react": "^4.5.2",
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.2.4",
+    "vite": "^8.0.10"
+  }
+}

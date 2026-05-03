@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/* ============================================
+   Coffee Kat - Design System
+   Paleta: Cappuccino + Gatos (Branco & Cinza)
+   ============================================ */
+
+/* --- Custom Theme via CSS --- */
+@theme {
+  /* Cores de Cappuccino */
+  --color-coffee-900: #2C1A0E;
+  --color-coffee-800: #3E2516;
+  --color-coffee-700: #5C3D2E;
+  --color-coffee-600: #7A5B47;
+  --color-coffee-500: #9B7B68;
+  --color-coffee-400: #B89C8C;
+  --color-coffee-300: #D4BEB0;
+  --color-coffee-200: #E8D9CF;
+  --color-coffee-100: #F5EDE7;
+  --color-coffee-50: #FBF7F4;
+
+  /* Cores Creme */
+  --color-cream-500: #D4A574;
+  --color-cream-400: #E0BB92;
+  --color-cream-300: #ECDBB5;
+  --color-cream-200: #F5ECDA;
+  --color-cream-100: #FAF4EB;
+  --color-cream-50: #FDFAF6;
+
+  /* Cores Caramelo */
+  --color-caramel-600: #8B5E3C;
+  --color-caramel-500: #A67B5B;
+  --color-caramel-400: #C49A6C;
+  --color-caramel-300: #D4B896;
+
+  /* Gato Branco (olhos azuis) */
+  --color-cat-white: #FAFAFA;
+  --color-cat-white-soft: #F0F0F0;
+  --color-cat-eyes: #5B9BD5;
+
+  /* Gato Cinza (rajado) */
+  --color-cat-gray-700: #4A4A4A;
+  --color-cat-gray-500: #7D7D7D;
+  --color-cat-gray-300: #B0B0B0;
+  --color-cat-gray-100: #E0E0E0;
+
+  /* Utilitários */
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-danger: #F44336;
+
+  /* Fonte */
+  --font-display: 'Cooper Black', 'Georgia', serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  /* Sombras */
+  --shadow-glass: 0 8px 32px rgba(44, 26, 14, 0.15);
+  --shadow-card: 0 4px 16px rgba(44, 26, 14, 0.1);
+  --shadow-hover: 0 8px 24px rgba(44, 26, 14, 0.2);
+}
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- Base Styles --- */
+body {
+  font-family: var(--font-body);
+  /* Mude aqui: */
+  background-image: url('/images/backgrounds/coffeeteria.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--color-coffee-900);
+  min-height: 100vh;
+  /* ... */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+/* --- Glassmorphism Utility --- */
+.glass {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-dark {
+  background: rgba(44, 26, 14, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-glass);
+}
+
+/* --- Animações --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.4s ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* --- Scrollbar Customizada --- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-coffee-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-coffee-500);
+}
