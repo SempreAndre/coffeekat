@@ -130,7 +130,7 @@ export const validators = {
  * O Session Cookie HttpOnly é gerenciado pelo navegador, não por JS.
  */
 export async function secureFetch(url, options = {}) {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+  const API_URL = import.meta.env.VITE_API_URL || ''
 
   // Se a URL não começa com http, adiciona o prefixo da API
   const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`
