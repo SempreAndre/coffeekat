@@ -2,14 +2,17 @@ import { useState } from 'react'
 import InputSecure from '../../components/InputSecure.jsx'
 import { validators, sanitizeInput } from '../../utils/security.js'
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 export default function CreateAdmin() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const updateField = (field) => (value) => setForm((prev) => ({ ...prev, [field]: value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setSuccess(false)
@@ -22,9 +25,33 @@ export default function CreateAdmin() {
     if (passErr) { setError(passErr); return }
     if (form.password !== form.confirmPassword) { setError('As senhas não coincidem'); return }
 
-    console.log('[MOCK] Novo admin criado:', { name: sanitizeInput(form.name), email: sanitizeInput(form.email) })
-    setSuccess(true)
-    setForm({ name: '', email: '', password: '', confirmPassword: '' })
+    setIsSubmitting(true)
+
+    try {
+      const res = await fetch(`${API_URL}/api/admin/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          name: sanitizeInput(form.name),
+          email: form.email.trim(),
+          password: form.password,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Erro ao criar administrador')
+      }
+
+      setSuccess(true)
+      setForm({ name: '', email: '', password: '', confirmPassword: '' })
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -49,8 +76,8 @@ export default function CreateAdmin() {
           <InputSecure id="admin-password" label="Senha" type="password" value={form.password} onChange={updateField('password')} validator={validators.password} placeholder="Min. 8 caracteres" required />
           <InputSecure id="admin-confirm" label="Confirmar Senha" type="password" value={form.confirmPassword} onChange={updateField('confirmPassword')} placeholder="Repita a senha" required />
 
-          <button type="submit" className="w-full py-3 bg-caramel-500 hover:bg-caramel-600 text-white rounded-xl font-semibold transition-all duration-300 cursor-pointer" id="create-admin-submit">
-            Criar Administrador
+          <button type="submit" disabled={isSubmitting} className={`w-full py-3 text-white rounded-xl font-semibold transition-all duration-300 ${isSubmitting ? 'bg-coffee-600/50 cursor-not-allowed' : 'bg-caramel-500 hover:bg-caramel-600 cursor-pointer'}`} id="create-admin-submit">
+            {isSubmitting ? 'Criando...' : 'Criar Administrador'}
           </button>
         </form>
       </div>

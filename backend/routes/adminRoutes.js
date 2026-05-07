@@ -11,7 +11,7 @@
 
 import { Router } from 'express'
 import { verifySession, requireAdmin } from '../middlewares/authMiddleware.js'
-import { db } from '../config/firebase.js'
+import { auth, db } from '../config/firebase.js'
 
 const router = Router()
 
@@ -111,6 +111,56 @@ router.get('/customers', async (req, res) => {
   } catch (error) {
     console.error('❌ Erro ao buscar clientes:', error.message)
     return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao buscar clientes.' })
+  }
+})
+
+/**
+ * POST /api/admin/users
+ * Cria um novo administrador.
+ */
+router.post('/users', async (req, res) => {
+  try {
+    const { name, email, password } = req.body
+
+    // Validações básicas no backend
+    if (!name || typeof name !== 'string' || name.trim().length < 3) {
+      return res.status(400).json({ error: 'NOME_INVALIDO', message: 'O nome deve ter pelo menos 3 caracteres.' })
+    }
+    if (!email || typeof email !== 'string' || !/^\\S+@\\S+\\.\\S+$/.test(email)) {
+      return res.status(400).json({ error: 'EMAIL_INVALIDO', message: 'O e-mail fornecido é inválido.' })
+    }
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({ error: 'SENHA_INVALIDA', message: 'A senha deve ter pelo menos 8 caracteres.' })
+    }
+
+    // Cria o usuário no Firebase Auth
+    const userRecord = await auth.createUser({
+      email: email.trim(),
+      password: password,
+      displayName: name.trim(),
+    })
+
+    // Salva o documento no Firestore com role 'admin'
+    const newAdmin = {
+      name: name.trim(),
+      email: email.trim(),
+      role: 'admin',
+      createdAt: new Date().toISOString(),
+    }
+
+    await db.collection('users').doc(userRecord.uid).set(newAdmin)
+
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Administrador criado com sucesso.', 
+      data: { id: userRecord.uid, name: newAdmin.name, email: newAdmin.email } 
+    })
+  } catch (error) {
+    console.error('❌ Erro ao criar administrador:', error.message)
+    if (error.code === 'auth/email-already-exists') {
+      return res.status(400).json({ error: 'EMAIL_EM_USO', message: 'Este e-mail já está em uso por outra conta.' })
+    }
+    return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao criar administrador.' })
   }
 })
 
