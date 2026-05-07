@@ -101,23 +101,13 @@ export function AuthProvider({ children }) {
       // 1. Cria o usuário no Firebase Auth
       const { idToken, uid } = await firebaseRegister(email, password)
 
-      // 2. Cria a sessão no backend (que também salva dados extras no Firestore)
+      // 2. Cria a sessão no backend e já salva dados extras no Firestore
       const res = await fetch(`${API_URL}/api/auth/session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify({ idToken, isRegister: true, ...extraData }),
       })
-
-      // 3. Salvar dados extras do usuário no Firestore via backend
-      if (Object.keys(extraData).length > 0) {
-        await fetch(`${API_URL}/api/auth/register-data`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ uid, ...extraData }),
-        })
-      }
 
       const data = await res.json()
 

@@ -24,7 +24,7 @@ const router = Router()
  * Response: { success: true, user: { uid, email, role, name } }
  */
 router.post('/session', async (req, res) => {
-  const { idToken } = req.body
+  const { idToken, isRegister, name, phone, document, address, nickname, role } = req.body
 
   if (!idToken || typeof idToken !== 'string') {
     return res.status(400).json({
@@ -43,7 +43,7 @@ router.post('/session', async (req, res) => {
     // Cria o Session Cookie
     const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn })
 
-    // Busca dados extras do usuário no Firestore (role, name, etc.)
+    // Busca ou define dados extras do usuário no Firestore (role, name, etc.)
     let userData = {
       uid: decodedToken.uid,
       email: decodedToken.email,
@@ -51,17 +51,38 @@ router.post('/session', async (req, res) => {
       role: 'user', // padrão
     }
 
-    try {
-      const userDoc = await db.collection('users').doc(decodedToken.uid).get()
-      if (userDoc.exists) {
-        const data = userDoc.data()
-        userData.role = data.role || 'user'
-        userData.name = data.name || userData.name
-        userData.nickname = data.nickname || ''
+    if (isRegister) {
+      // Se for registro, salva os dados no Firestore agora
+      userData = {
+        ...userData,
+        name: String(name || '').trim(),
+        phone: String(phone || '').trim(),
+        document: String(document || '').trim(),
+        address: String(address || '').trim(),
+        nickname: String(nickname || '').trim(),
+        role: role || 'user',
+        createdAt: new Date().toISOString(),
       }
-    } catch (firestoreError) {
-      // Se o Firestore não tiver dados do usuário, usa os padrões
-      console.warn('⚠️ Dados do usuário não encontrados no Firestore:', firestoreError.message)
+      
+      try {
+        await db.collection('users').doc(decodedToken.uid).set(userData, { merge: true })
+      } catch (firestoreError) {
+        console.error('❌ Erro ao salvar dados do usuário no registro:', firestoreError.message)
+      }
+    } else {
+      // Login normal: busca os dados existentes
+      try {
+        const userDoc = await db.collection('users').doc(decodedToken.uid).get()
+        if (userDoc.exists) {
+          const data = userDoc.data()
+          userData.role = data.role || 'user'
+          userData.name = data.name || userData.name
+          userData.nickname = data.nickname || ''
+        }
+      } catch (firestoreError) {
+        // Se o Firestore não tiver dados do usuário, usa os padrões
+        console.warn('⚠️ Dados do usuário não encontrados no Firestore:', firestoreError.message)
+      }
     }
 
     // Define o cookie seguro no navegador

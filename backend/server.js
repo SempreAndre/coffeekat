@@ -87,7 +87,8 @@ const authLimiter = rateLimit({
 // ============================================
 
 // Aplica rate limiter rigoroso apenas nas rotas de autenticação
-app.use('/api/auth', authLimiter, authRoutes)
+// DESATIVADO PARA TESTES a pedido do usuário
+app.use('/api/auth', /* authLimiter, */ authRoutes)
 
 // Rotas do painel administrativo
 app.use('/api/admin', adminRoutes)
