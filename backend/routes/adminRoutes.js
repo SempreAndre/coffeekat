@@ -239,3 +239,5 @@ router.get('/orders', async (req, res) => {
     return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao buscar pedidos.' })
   }
 })
+
+export default router
