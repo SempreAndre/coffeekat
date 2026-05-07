@@ -126,7 +126,7 @@ router.post('/users', async (req, res) => {
     if (!name || typeof name !== 'string' || name.trim().length < 3) {
       return res.status(400).json({ error: 'NOME_INVALIDO', message: 'O nome deve ter pelo menos 3 caracteres.' })
     }
-    if (!email || typeof email !== 'string' || !/^\\S+@\\S+\\.\\S+$/.test(email)) {
+    if (!email || typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
       return res.status(400).json({ error: 'EMAIL_INVALIDO', message: 'O e-mail fornecido é inválido.' })
     }
     if (!password || typeof password !== 'string' || password.length < 8) {
