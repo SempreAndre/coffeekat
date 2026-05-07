@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { firebaseStorage } from '../../config/firebase.js'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -32,13 +30,16 @@ export default function CreateProduct() {
     setIsSubmitting(true)
 
     try {
-      let imageUrl = ''
+      let imageBase64 = ''
 
       if (imageFile) {
-        // Faz o upload da imagem para o Firebase Storage
-        const storageRef = ref(firebaseStorage, `products/${Date.now()}_${imageFile.name}`)
-        const snapshot = await uploadBytes(storageRef, imageFile)
-        imageUrl = await getDownloadURL(snapshot.ref)
+        // Converte a imagem para Base64 para enviar ao backend
+        imageBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.readAsDataURL(imageFile)
+          reader.onload = () => resolve(reader.result)
+          reader.onerror = (error) => reject(error)
+        })
       }
 
       // Prepara e envia os dados para a API
@@ -52,7 +53,7 @@ export default function CreateProduct() {
           description: form.description,
           price: Number(form.price),
           stock: Number(form.stock || 0),
-          image: imageUrl,
+          imageBase64: imageBase64,
         }),
       })
 

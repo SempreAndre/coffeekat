@@ -12,6 +12,7 @@
 import { Router } from 'express'
 import { verifySession, requireAdmin } from '../middlewares/authMiddleware.js'
 import { auth, db } from '../config/firebase.js'
+import { put } from '@vercel/blob'
 
 const router = Router()
 
@@ -83,10 +84,23 @@ router.get('/products', async (req, res) => {
  */
 router.post('/products', async (req, res) => {
   try {
-    const { name, price, category, description, stock, image } = req.body
+    const { name, price, category, description, stock, imageBase64 } = req.body
 
     if (!name || price === undefined) {
       return res.status(400).json({ error: 'DADOS_INCOMPLETOS', message: 'Nome e preço são obrigatórios.' })
+    }
+
+    let imageUrl = ''
+    if (imageBase64) {
+      try {
+        const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, 'base64');
+        const fileName = `products/${Date.now()}-${name.replace(/\s+/g, '-').toLowerCase()}.jpg`
+        const blob = await put(fileName, buffer, { access: 'public', token: process.env.BLOB_READ_WRITE_TOKEN })
+        imageUrl = blob.url
+      } catch (uploadError) {
+        console.error('❌ Erro no upload para Vercel Blob:', uploadError)
+      }
     }
 
     const newProduct = {
@@ -95,7 +109,7 @@ router.post('/products', async (req, res) => {
       category: String(category || '').trim(),
       description: String(description || '').trim(),
       stock: Number(stock || 0),
-      image: String(image || '').trim(),
+      image: imageUrl,
       active: true,
       createdAt: new Date().toISOString(),
       createdBy: req.user.uid,
