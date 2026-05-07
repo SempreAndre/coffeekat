@@ -6,7 +6,7 @@
  * Se inválido ou ausente, retorna 401 Unauthorized.
  */
 
-import { auth } from '../config/firebase.js'
+import { auth, db } from '../config/firebase.js'
 
 /**
  * Middleware que protege rotas verificando o cookie de sessão.
@@ -27,11 +27,25 @@ export async function verifySession(req, res, next) {
     // checkRevoked: true garante que se o token foi revogado (ex: senha alterada), a sessão expira
     const decodedClaims = await auth.verifySessionCookie(sessionCookie, true)
 
+    let userRole = decodedClaims.role
+
+    // Se o cookie não tiver a role (comum se custom claims não foram setadas), busca no Firestore
+    if (!userRole) {
+      try {
+        const userDoc = await db.collection('users').doc(decodedClaims.uid).get()
+        if (userDoc.exists) {
+          userRole = userDoc.data().role
+        }
+      } catch (err) {
+        console.warn('⚠️ Não foi possível buscar a role no Firestore:', err.message)
+      }
+    }
+
     // Anexa os dados do usuário à requisição
     req.user = {
       uid: decodedClaims.uid,
       email: decodedClaims.email,
-      role: decodedClaims.role || 'user',
+      role: userRole || 'user',
       name: decodedClaims.name || '',
     }
 
