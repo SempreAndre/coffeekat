@@ -25,13 +25,31 @@ router.use(requireAdmin)
  */
 router.get('/stats', async (req, res) => {
   try {
-    // TODO: Implementar consultas reais ao Firestore
-    // Por enquanto, retorna dados de exemplo para validar a integração
+    const usersSnap = await db.collection('users').where('role', '==', 'user').get()
+    const productsSnap = await db.collection('products').get()
+    const ordersSnap = await db.collection('orders').get()
+
+    let ordersToday = 0
+    let salesToday = 0
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    ordersSnap.forEach(doc => {
+      const data = doc.data()
+      if (data.createdAt) {
+        const orderDate = new Date(data.createdAt)
+        if (orderDate >= today) {
+          ordersToday++
+          salesToday += (data.total || 0)
+        }
+      }
+    })
+
     const stats = {
-      salesToday: 'R$ 0,00',
-      ordersToday: 0,
-      activeCustomers: 0,
-      productsInStock: 0,
+      salesToday: `R$ ${salesToday.toFixed(2).replace('.', ',')}`,
+      ordersToday,
+      activeCustomers: usersSnap.size,
+      productsInStock: productsSnap.size,
     }
 
     return res.status(200).json({ success: true, data: stats })
@@ -65,7 +83,7 @@ router.get('/products', async (req, res) => {
  */
 router.post('/products', async (req, res) => {
   try {
-    const { name, price, category, description, stock } = req.body
+    const { name, price, category, description, stock, image } = req.body
 
     if (!name || price === undefined) {
       return res.status(400).json({ error: 'DADOS_INCOMPLETOS', message: 'Nome e preço são obrigatórios.' })
@@ -77,6 +95,8 @@ router.post('/products', async (req, res) => {
       category: String(category || '').trim(),
       description: String(description || '').trim(),
       stock: Number(stock || 0),
+      image: String(image || '').trim(),
+      active: true,
       createdAt: new Date().toISOString(),
       createdBy: req.user.uid,
     }
@@ -164,4 +184,58 @@ router.post('/users', async (req, res) => {
   }
 })
 
-export default router
+
+
+/**
+ * PATCH /api/admin/products/:id
+ * Altera status do produto (Ativo/Inativo)
+ */
+router.patch('/products/:id', async (req, res) => {
+  try {
+    const { active } = req.body
+    await db.collection('products').doc(req.params.id).update({ active: !!active })
+    return res.status(200).json({ success: true })
+  } catch (error) {
+    console.error('❌ Erro ao atualizar produto:', error.message)
+    return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao atualizar produto.' })
+  }
+})
+
+/**
+ * PATCH /api/admin/products/:id/stock
+ * Altera a quantidade em estoque de um produto
+ */
+router.patch('/products/:id/stock', async (req, res) => {
+  try {
+    const { delta } = req.body
+    if (typeof delta !== 'number') return res.status(400).json({ error: 'DADOS_INVALIDOS' })
+
+    const docRef = db.collection('products').doc(req.params.id)
+    const docSnap = await docRef.get()
+    if (!docSnap.exists) return res.status(404).json({ error: 'NAO_ENCONTRADO' })
+
+    const currentStock = docSnap.data().stock || 0
+    const newStock = Math.max(0, currentStock + delta)
+
+    await docRef.update({ stock: newStock })
+    return res.status(200).json({ success: true, newStock })
+  } catch (error) {
+    console.error('❌ Erro ao atualizar estoque:', error.message)
+    return res.status(500).json({ error: 'ERRO_INTERNO' })
+  }
+})
+
+/**
+ * GET /api/admin/orders
+ * Lista todos os pedidos
+ */
+router.get('/orders', async (req, res) => {
+  try {
+    const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').get()
+    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    return res.status(200).json({ success: true, data: orders })
+  } catch (error) {
+    console.error('❌ Erro ao buscar pedidos:', error.message)
+    return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao buscar pedidos.' })
+  }
+})

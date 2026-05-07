@@ -20,7 +20,9 @@ import Settings from './pages/admin/Settings.jsx'
 import Inventory from './pages/admin/Inventory.jsx'
 import CashRegister from './pages/admin/CashRegister.jsx'
 import Products from './pages/admin/Products.jsx'
+import CreateProduct from './pages/admin/CreateProduct.jsx'
 import Customers from './pages/admin/Customers.jsx'
+import Orders from './pages/admin/Orders.jsx'
 import Reports from './pages/admin/Reports.jsx'
 
 /**
@@ -83,7 +85,9 @@ export default function App() {
         <Route path="inventory" element={<Inventory />} />
         <Route path="cash-register" element={<CashRegister />} />
         <Route path="products" element={<Products />} />
+        <Route path="products/new" element={<CreateProduct />} />
         <Route path="customers" element={<Customers />} />
+        <Route path="orders" element={<Orders />} />
         <Route path="reports" element={<Reports />} />
       </Route>
 

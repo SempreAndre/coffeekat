@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext.jsx'
 
 const menuItems = [
   { path: '/admin', label: 'Dashboard', icon: <img src="/images/icons/Dashboard.png" alt="Dashboard" width="24" height="24" />, end: true },
+  { path: '/admin/orders', label: 'Pedidos', icon: <span className="w-6 h-6 flex items-center justify-center text-xl">📦</span> },
   { path: '/admin/products', label: 'Produtos', icon: <img src="/images/icons/Produtos.png" alt="Produtos" width="24" height="24" /> },
   { path: '/admin/inventory', label: 'Estoque', icon: <img src="/images/icons/Estoque.png" alt="Estoque" width="24" height="24" /> },
   { path: '/admin/cash-register', label: 'Caixa', icon: <img src="/images/icons/Caixa.png" alt="Caixa" width="24" height="24" /> },

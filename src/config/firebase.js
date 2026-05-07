@@ -11,6 +11,7 @@
 
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth'
+import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -23,6 +24,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 export const firebaseAuth = getAuth(app)
+export const firebaseStorage = getStorage(app)
 
 /**
  * Faz login com email/senha no Firebase Auth.
