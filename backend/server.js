@@ -49,7 +49,7 @@ app.use(cookieParser())
 /**
  * Body Parser — Limita o tamanho do body para prevenir ataques de payload.
  */
-app.use(express.json({ limit: '1mb' }))
+app.use(express.json({ limit: '4.5mb' }))
 
 /**
  * Rate Limiter Geral — Limita todas as requisições para prevenir DDoS.
