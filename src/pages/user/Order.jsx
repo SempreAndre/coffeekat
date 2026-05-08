@@ -43,9 +43,13 @@ export default function Order() {
               style={{ boxShadow: 'var(--shadow-card)' }}
               id={`order-item-${item.id}`}
             >
-              {/* Icon */}
-              <div className="w-14 h-14 bg-cream-200 rounded-lg flex items-center justify-center text-2xl shrink-0">
-                ☕
+              {/* Imagem do Produto */}
+              <div className="w-14 h-14 bg-cream-200 rounded-lg flex items-center justify-center text-2xl shrink-0 overflow-hidden">
+                {item.image ? (
+                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span>☕</span>
+                )}
               </div>
 
               {/* Info */}

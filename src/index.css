@@ -88,10 +88,10 @@ h6 {
 
 /* --- Glassmorphism Utility --- */
 .glass {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(20, 10, 5, 0.60);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow-glass);
 }
 

@@ -64,9 +64,10 @@ export default function Login() {
 
       <GlassContainer className="w-full max-w-md relative animate-fade-in">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 flex flex-col items-center">
+          <img src="/images/logos/Logo.png" alt="Coffee Kat Logo" className="w-24 h-24 mb-3 opacity-90" />
           <h1 className="text-3xl font-[var(--font-display)] text-cream-50 mb-2">
-            ☕ Coffee Kat
+            Coffee Kat
           </h1>
           <p className="text-cream-300/80">Entre na sua conta</p>
         </div>
