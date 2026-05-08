@@ -49,7 +49,7 @@ export default function Dashboard() {
   const statusColors = {
     'Entregue': 'bg-success/20 text-success',
     'Preparando': 'bg-warning/20 text-warning',
-    'Pendente': 'bg-cream-300 text-coffee-600',
+    'Pendente': 'bg-cream-300/20 text-cream-100',
     'Cancelado': 'bg-danger/20 text-danger',
   }
 
@@ -91,8 +91,8 @@ export default function Dashboard() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="text-cream-400 text-sm border-b border-white/10">
-                    <th className="pb-3 font-medium text-coffee-900 mb-4">Pedido</th>
-                    <th className="pb-3 font-medium text-coffee-900 mb-4">Cliente</th>
+                    <th className="pb-3 font-medium text-cream-100 mb-4">Pedido</th>
+                    <th className="pb-3 font-medium text-cream-100 mb-4">Cliente</th>
                     <th className="pb-3 font-medium text-cream-100 mb-4">Total</th>
                     <th className="pb-3 font-medium text-cream-100 mb-4">Status</th>
                   </tr>

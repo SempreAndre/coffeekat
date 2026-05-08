@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || ''
 const statusColors = {
   'Entregue': 'bg-success/20 text-success',
   'Preparando': 'bg-warning/20 text-warning',
-  'Pendente': 'bg-cream-300 text-coffee-600',
+  'Pendente': 'bg-cream-300/20 text-cream-100',
   'Cancelado': 'bg-danger/20 text-danger',
 }
 

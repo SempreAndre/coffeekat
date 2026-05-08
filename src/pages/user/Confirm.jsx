@@ -50,15 +50,25 @@ export default function Confirm() {
     }
 
     try {
-      // Simula envio seguro ao backend com headers CSRF
-      // Na integração real: await secureFetch('/api/orders', { method: 'POST', body: JSON.stringify(orderData) })
-      console.log('[MOCK] Pedido enviado com secureFetch:', orderData)
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      const API_URL = import.meta.env.VITE_API_URL || ''
+      const response = await fetch(`${API_URL}/api/public/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao processar o pedido.')
+      }
 
       clearCart()
       navigate('/thanks', { state: { orderNumber: `CK-${Date.now().toString(36).toUpperCase()}` } })
-    } catch {
-      setError('Erro ao processar o pedido. Tente novamente.')
+    } catch (err) {
+      setError(err.message || 'Erro ao processar o pedido. Tente novamente.')
     } finally {
       setIsSubmitting(false)
     }
