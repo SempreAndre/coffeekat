@@ -86,6 +86,7 @@ export default function Login() {
               required
               disabled={isSubmitting}
               autoComplete="email"
+              labelClassName="text-cream-100"
             />
 
             <InputSecure
@@ -98,6 +99,7 @@ export default function Login() {
               required
               disabled={isSubmitting}
               autoComplete="current-password"
+              labelClassName="text-cream-100"
             />
           </div>
 

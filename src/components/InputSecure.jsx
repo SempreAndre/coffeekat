@@ -17,6 +17,7 @@ export default function InputSecure({
   disabled = false,
   maxLength = 255,
   className = '',
+  labelClassName = 'text-coffee-700',
   autoComplete,
   mask,
 }) {
@@ -63,7 +64,7 @@ export default function InputSecure({
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-medium text-coffee-700"
+          className={`text-sm font-medium ${labelClassName}`}
         >
           {label}
           {required && <span className="text-danger ml-1">*</span>}
