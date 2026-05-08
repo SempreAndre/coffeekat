@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { db } from '../config/firebase.js'
+import { db, auth } from '../config/firebase.js'
 
 const router = Router()
 
@@ -24,6 +24,55 @@ router.get('/products', async (req, res) => {
     return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao carregar a vitrine.' })
   }
 })
+
+/**
+ * POST /api/public/register
+ * Cadastra um novo cliente e aplica as 5 regras da Senha Forte diretamente no servidor.
+ */
+router.post('/register', async (req, res) => {
+  const { email, password, name, phone, document, address, nickname } = req.body
+
+  if (!email || !password || !name) {
+    return res.status(400).json({ error: 'BAD_REQUEST', message: 'Email, senha e nome são obrigatórios.' })
+  }
+
+  // Verificação de Senha no Backend
+  if (password.length < 8) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter no mínimo 8 caracteres' })
+  if (!/[A-Z]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos uma letra maiúscula' })
+  if (!/[a-z]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos uma letra minúscula' })
+  if (!/[0-9]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos um número' })
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos um caractere especial' })
+
+  try {
+    const userRecord = await auth.createUser({
+      email: email.trim(),
+      password: password,
+      displayName: name.trim()
+    })
+
+    const newUser = {
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone || '',
+      document: document || '',
+      address: address || '',
+      nickname: nickname || '',
+      role: 'user',
+      createdAt: new Date().toISOString()
+    }
+
+    await db.collection('users').doc(userRecord.uid).set(newUser)
+
+    return res.status(201).json({ success: true, message: 'Conta criada com sucesso.' })
+  } catch (error) {
+    console.error('❌ Erro no registro de cliente:', error.message)
+    if (error.code === 'auth/email-already-exists') {
+      return res.status(400).json({ error: 'EMAIL_EM_USO', message: 'Este e-mail já está em uso.' })
+    }
+    return res.status(500).json({ error: 'ERRO_INTERNO', message: 'Erro ao criar conta.' })
+  }
+})
+
 /**
  * POST /api/public/orders
  * Recebe o carrinho, valida estoque, desconta e salva o pedido real.

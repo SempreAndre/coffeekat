@@ -182,9 +182,14 @@ router.post('/users', async (req, res) => {
     if (!email || typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
       return res.status(400).json({ error: 'EMAIL_INVALIDO', message: 'O e-mail fornecido é inválido.' })
     }
-    if (!password || typeof password !== 'string' || password.length < 8) {
-      return res.status(400).json({ error: 'SENHA_INVALIDA', message: 'A senha deve ter pelo menos 8 caracteres.' })
-    }
+    
+    // Verificação de Senha Forte
+    if (!password || typeof password !== 'string') return res.status(400).json({ error: 'SENHA_INVALIDA', message: 'Senha inválida' })
+    if (password.length < 8) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter no mínimo 8 caracteres' })
+    if (!/[A-Z]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos uma letra maiúscula' })
+    if (!/[a-z]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos uma letra minúscula' })
+    if (!/[0-9]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos um número' })
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return res.status(400).json({ error: 'SENHA_FRACA', message: 'Senha deve ter pelo menos um caractere especial' })
 
     // Cria o usuário no Firebase Auth
     const userRecord = await auth.createUser({

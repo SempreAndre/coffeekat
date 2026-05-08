@@ -94,50 +94,45 @@ export function AuthProvider({ children }) {
   }, [])
 
   /**
-   * Registro de novo usuário via Firebase Auth + salvamento no Firestore via backend.
+   * Registro de novo usuário via nosso Backend Seguro.
+   * O backend valida a senha forte e cria a conta.
    */
   const register = useCallback(async (email, password, extraData = {}) => {
     try {
-      // 1. Cria o usuário no Firebase Auth
-      const { idToken, uid } = await firebaseRegister(email, password)
+      const payload = {
+        email: email.trim(),
+        password,
+        ...extraData
+      }
 
-      // 2. Cria a sessão no backend e já salva dados extras no Firestore
-      const res = await fetch(`${API_URL}/api/auth/session`, {
+      const res = await fetch(`${API_URL}/api/public/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ idToken, isRegister: true, ...extraData }),
+        body: JSON.stringify(payload)
       })
 
       const data = await res.json()
 
-      if (res.ok) {
-        setUser(data.user)
-        return { success: true, user: data.user }
+      if (!res.ok) {
+        return {
+          success: false,
+          error: data.error || 'ERRO_REGISTRO',
+          message: data.message || 'Erro ao criar conta.',
+        }
       }
 
-      return {
-        success: false,
-        error: data.error,
-        message: data.message,
-      }
+      // 2. Se a conta foi criada, fazemos o login real!
+      return await login(email, password)
 
     } catch (error) {
-      console.error('Erro no registro:', error.code || error.message)
-
-      const firebaseErrors = {
-        'auth/email-already-in-use': 'Este email já está em uso.',
-        'auth/weak-password': 'Senha muito fraca. Use pelo menos 6 caracteres.',
-        'auth/invalid-email': 'Email inválido.',
-      }
-
+      console.error('Erro no registro:', error.message)
       return {
         success: false,
-        error: error.code || 'UNKNOWN_ERROR',
-        message: firebaseErrors[error.code] || 'Erro ao criar conta. Tente novamente.',
+        error: 'UNKNOWN_ERROR',
+        message: 'Erro ao criar conta. Tente novamente.',
       }
     }
-  }, [])
+  }, [login])
 
   /**
    * Logout: limpa sessão no backend (revoga tokens) + logout do Firebase Auth client.
