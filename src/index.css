@@ -87,18 +87,47 @@ h6 {
 }
 
 /* --- Glassmorphism Utility --- */
+.glass,
+.glass-dark {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
 .glass {
-  @apply backdrop-blur-[16px];
   background: rgba(20, 10, 5, 0.60);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow-glass);
 }
 
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background-image: url('/images/backgrounds/coffeeteria.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: blur(16px);
+  z-index: -1;
+}
+
 .glass-dark {
-  @apply backdrop-blur-[24px] backdrop-saturate-[1.2];
   background: rgba(44, 26, 14, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: var(--shadow-glass);
+}
+
+.glass-dark::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background-image: url('/images/backgrounds/coffeeteria.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: blur(24px) saturate(1.2);
+  z-index: -1;
 }
 
 /* --- Animações --- */
