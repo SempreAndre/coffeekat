@@ -78,7 +78,7 @@ router.post('/orders', async (req, res) => {
         address,
         notes: notes || '',
         status: 'Pendente', 
-        createdAt: timestamp || new Date().toISOString()
+        createdAt: createdAt || new Date().toISOString()
       })
     })
 
