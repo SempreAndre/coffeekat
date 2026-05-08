@@ -148,6 +148,7 @@ export default function Register() {
               placeholder="Seu nome completo"
               required
               autoComplete="name"
+              labelClassName="text-cream-100"
             />
 
             <InputSecure
@@ -160,6 +161,7 @@ export default function Register() {
               placeholder="seu@email.com"
               required
               autoComplete="email"
+              labelClassName="text-cream-100"
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -174,6 +176,7 @@ export default function Register() {
                 required
                 mask={phoneMask}
                 autoComplete="tel"
+                labelClassName="text-cream-100"
               />
 
               <InputSecure
@@ -185,6 +188,7 @@ export default function Register() {
                 placeholder="000.000.000-00"
                 required
                 mask={cpfMask}
+                labelClassName="text-cream-100"
               />
             </div>
 
@@ -196,6 +200,7 @@ export default function Register() {
               validator={validators.address}
               placeholder="Pode ser preenchido na hora da compra"
               autoComplete="street-address"
+              labelClassName="text-cream-100"
             />
 
             <InputSecure
@@ -206,6 +211,7 @@ export default function Register() {
               validator={validators.nickname}
               placeholder="Seu apelido"
               maxLength={30}
+              labelClassName="text-cream-100"
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -219,6 +225,7 @@ export default function Register() {
                 placeholder="Min. 8 caracteres"
                 required
                 autoComplete="new-password"
+                labelClassName="text-cream-100"
               />
 
               <div className="flex flex-col gap-1">
@@ -231,6 +238,7 @@ export default function Register() {
                   placeholder="Repita a senha"
                   required
                   autoComplete="new-password"
+                  labelClassName="text-cream-100"
                 />
                 {errors.confirmPassword && (
                   <span className="text-xs text-danger">{errors.confirmPassword}</span>
