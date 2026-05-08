@@ -215,31 +215,18 @@ export default function Register() {
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-4">
-                <InputSecure
-                  id="register-password"
-                  label="Senha"
-                  type="password"
-                  value={form.password}
-                  onChange={updateField('password')}
-                  validator={validators.password}
-                  placeholder="Min. 8 caracteres"
-                  required
-                  autoComplete="new-password"
-                  labelClassName="text-cream-100"
-                />
-
-                {/* Aviso de Senha Forte */}
-                <div className="bg-caramel-500/10 border border-caramel-500/20 rounded-xl p-4 text-sm text-cream-100 text-left">
-                  <p className="font-semibold mb-2">Requisitos da senha:</p>
-                  <ul className="list-disc pl-5 space-y-1 text-cream-300">
-                    <li>Pelo menos 8 caracteres</li>
-                    <li>Letra maiúscula e minúscula</li>
-                    <li>Pelo menos um número (0-9)</li>
-                    <li>Caractere especial (@, #, $, etc)</li>
-                  </ul>
-                </div>
-              </div>
+              <InputSecure
+                id="register-password"
+                label="Senha"
+                type="password"
+                value={form.password}
+                onChange={updateField('password')}
+                validator={validators.password}
+                placeholder="Min. 8 caracteres"
+                required
+                autoComplete="new-password"
+                labelClassName="text-cream-100"
+              />
 
               <div className="flex flex-col gap-1">
                 <InputSecure
@@ -258,6 +245,20 @@ export default function Register() {
                 )}
               </div>
             </div>
+
+            {/* Aviso de Senha Forte - Linha Inteira e Exibição Condicional */}
+            {errors.password && (
+              <div className="bg-caramel-500/10 border border-caramel-500/20 rounded-xl p-4 text-sm text-cream-100 text-left animate-fade-in mt-1">
+                <p className="font-semibold mb-2 text-danger">⚠️ {errors.password}</p>
+                <p className="mb-2 font-medium">Requisitos da senha:</p>
+                <ul className="list-disc pl-5 space-y-1 text-cream-200">
+                  <li>Pelo menos 8 caracteres</li>
+                  <li>Letra maiúscula e minúscula</li>
+                  <li>Pelo menos um número (0-9)</li>
+                  <li>Caractere especial (@, #, $, etc)</li>
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Erro de submit */}
