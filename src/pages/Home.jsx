@@ -6,11 +6,13 @@ export default function Home() {
   const { isAuthenticated, user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-cream-50">
-      <Navbar />
+    <div className="min-h-screen bg-cream-50 relative">
+      <div className="absolute top-0 left-0 w-full z-50">
+        <Navbar />
+      </div>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden pt-16">
         <div className="absolute inset-0 bg-[url('/images/backgrounds/coffeeteria.png')] bg-cover bg-center" />
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 text-8xl opacity-10 animate-pulse-soft"></div>
@@ -99,8 +101,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-coffee-900 text-cream-300 py-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-2xl font-[var(--font-display)] text-cream-100 mb-2">☕ Coffee Kat</p>
+        <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
+          <img src="/images/logos/Logo.png" alt="Coffee Kat Logo" className="w-20 h-20 mb-3 opacity-90" />
+          <p className="text-xl font-[var(--font-display)] text-cream-100 mb-2">Coffee Kat</p>
           <p className="text-sm text-cream-400">© 2026 Coffee Kat. Todos os direitos reservados.</p>
         </div>
       </footer>
