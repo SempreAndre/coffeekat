@@ -40,7 +40,7 @@ export default function Orders() {
     <div>
       <div className="mb-6">
         <h1 className="text-3xl font-[var(--font-display)] text-cream-100">Controle de Pedidos</h1>
-        <p className="mt-1" style={{ color: 'white' }}>Acompanhe todos os pedidos da loja.</p>
+        <p className="mt-1" style={{ color: '#ffffff' }}>Acompanhe todos os pedidos da loja em tempo real.</p>
       </div>
 
       <div className="glass rounded-xl overflow-hidden">
