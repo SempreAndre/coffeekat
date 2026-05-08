@@ -39,6 +39,7 @@ export default function AdminLayout() {
         className={`fixed md:sticky top-0 left-0 h-screen w-64 z-50 glass-dark flex flex-col transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         id="admin-sidebar"
+        style={{ backdropFilter: 'blur(24px) saturate(1.2)', WebkitBackdropFilter: 'blur(24px) saturate(1.2)' }}
       >
         {/* Logo */}
         <div className="p-6 border-b border-white/10">
@@ -98,7 +99,7 @@ export default function AdminLayout() {
       {/* Conteúdo Principal */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Top bar mobile */}
-        <header className="md:hidden sticky top-0 z-30 glass-dark px-4 py-3 flex items-center justify-between">
+        <header className="md:hidden sticky top-0 z-30 glass-dark px-4 py-3 flex items-center justify-between" style={{ backdropFilter: 'blur(24px) saturate(1.2)', WebkitBackdropFilter: 'blur(24px) saturate(1.2)' }}>
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-cream-200 hover:text-white cursor-pointer"

@@ -4,9 +4,13 @@
  */
 export default function GlassContainer({ children, className = '', dark = false }) {
   const baseClass = dark ? 'glass-dark' : 'glass'
+  const blurValue = dark ? 'blur(24px) saturate(1.2)' : 'blur(16px)'
 
   return (
-    <div className={`${baseClass} rounded-2xl p-6 md:p-8 ${className}`}>
+    <div
+      className={`${baseClass} rounded-2xl p-6 md:p-8 ${className}`}
+      style={{ backdropFilter: blurValue, WebkitBackdropFilter: blurValue }}
+    >
       {children}
     </div>
   )

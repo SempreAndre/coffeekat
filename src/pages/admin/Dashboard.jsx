@@ -57,10 +57,10 @@ export default function Dashboard() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-[var(--font-display)] text-cream-100 mb-1">
+        <h1 className="text-3xl font-[var(--font-display)] text-white mb-1">
           Dashboard
         </h1>
-        <p className="text-cream-400">Bem-vindo de volta, {user?.nickname || user?.name || 'Admin'}!</p>
+        <p className="text-white">Bem-vindo de volta, {user?.nickname || user?.name || 'Admin'}!</p>
       </div>
 
       {isLoading ? (
@@ -73,7 +73,7 @@ export default function Dashboard() {
               <div
                 key={i}
                 className="glass rounded-xl p-5 transition-all duration-300 hover:-translate-y-0.5"
-                style={{ animationDelay: `${i * 0.1}s` }}
+                style={{ animationDelay: `${i * 0.1}s`, backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-2xl">{card.icon}</span>
@@ -85,7 +85,7 @@ export default function Dashboard() {
           </div>
 
           {/* Pedidos Recentes */}
-          <div className="glass rounded-xl p-6">
+          <div className="glass rounded-xl p-6" style={{ backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
             <h2 className="text-xl font-bold text-cream-100 mb-4">Pedidos Recentes</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
