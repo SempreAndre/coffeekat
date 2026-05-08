@@ -37,6 +37,7 @@ export default function Confirm() {
     // Monta o pedido com dados sanitizados
     const orderData = {
       userId: user?.id,
+      customerName: user?.name || user?.nickname || 'Cliente Expresso',
       items: items.map((item) => ({
         productId: item.id,
         name: sanitizeInput(item.name),
@@ -46,7 +47,7 @@ export default function Confirm() {
       total: totalPrice,
       address: sanitizeInput(address),
       notes: sanitizeInput(notes),
-      timestamp: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     }
 
     try {

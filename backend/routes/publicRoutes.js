@@ -29,7 +29,7 @@ router.get('/products', async (req, res) => {
  * Recebe o carrinho, valida estoque, desconta e salva o pedido real.
  */
 router.post('/orders', async (req, res) => {
-  const { userId, items, total, address, notes, timestamp } = req.body
+  const { userId, customerName, items, total, address, notes, createdAt } = req.body
 
   if (!items || !items.length || !total || !address) {
     return res.status(400).json({ error: 'BAD_REQUEST', message: 'Dados do pedido incompletos.' })
@@ -72,12 +72,13 @@ router.post('/orders', async (req, res) => {
       const newOrderRef = db.collection('orders').doc()
       transaction.set(newOrderRef, {
         userId: userId || 'anonymous',
+        customerName: req.body.customerName || 'Cliente Expresso',
         items,
         total,
         address,
         notes: notes || '',
-        status: 'pending', // default start
-        timestamp: timestamp || new Date().toISOString()
+        status: 'Pendente', 
+        createdAt: timestamp || new Date().toISOString()
       })
     })
 
