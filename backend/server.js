@@ -15,6 +15,7 @@ import cookieParser from 'cookie-parser'
 // Rotas
 import authRoutes from './routes/authRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import publicRoutes from './routes/publicRoutes.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -92,6 +93,9 @@ app.use('/api/auth', /* authLimiter, */ authRoutes)
 
 // Rotas do painel administrativo
 app.use('/api/admin', adminRoutes)
+
+// Rotas públicas (Vitrine, etc)
+app.use('/api/public', publicRoutes)
 
 // Rota de saúde (health check)
 app.get('/api/health', (req, res) => {

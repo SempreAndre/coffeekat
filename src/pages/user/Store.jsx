@@ -1,30 +1,38 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '../../components/Navbar.jsx'
 import ProductCard from '../../components/ProductCard.jsx'
 
-/** Produtos mock para demonstração */
-const MOCK_PRODUCTS = [
-  { id: 'p1', name: 'Cappuccino Clássico', description: 'Espresso com leite vaporizado e espuma cremosa.', price: 14.90, category: 'Cafés', image: null },
-  { id: 'p2', name: 'Latte Caramelo', description: 'Café latte com calda de caramelo artesanal.', price: 16.90, category: 'Cafés', image: null },
-  { id: 'p3', name: 'Espresso Duplo', description: 'Shot duplo de espresso para energizar seu dia.', price: 9.90, category: 'Cafés', image: null },
-  { id: 'p4', name: 'Mocha Especial', description: 'Café com chocolate belga e chantilly.', price: 18.90, category: 'Cafés', image: null },
-  { id: 'p5', name: 'Brownie do Gatinho', description: 'Brownie de chocolate meio amargo com nozes.', price: 12.90, category: 'Doces', image: null },
-  { id: 'p6', name: 'Cookie Cat', description: 'Cookie artesanal em formato de gatinho.', price: 8.90, category: 'Doces', image: null },
-  { id: 'p7', name: 'Cheesecake de Café', description: 'Cheesecake cremoso com sabor de café.', price: 15.90, category: 'Doces', image: null },
-  { id: 'p8', name: 'Chá Matte Gelado', description: 'Refrescante chá matte com limão.', price: 10.90, category: 'Bebidas', image: null },
-  { id: 'p9', name: 'Suco Natural', description: 'Suco de laranja, limão ou maracujá.', price: 11.90, category: 'Bebidas', image: null },
-]
-
+const API_URL = import.meta.env.VITE_API_URL || ''
 const CATEGORIES = ['Todos', 'Cafés', 'Doces', 'Bebidas']
 
 export default function Store() {
   const [activeCategory, setActiveCategory] = useState('Todos')
   const [search, setSearch] = useState('')
+  const [products, setProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const filtered = MOCK_PRODUCTS.filter((p) => {
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/public/products`)
+      const data = await res.json()
+      if (res.ok) {
+        setProducts(data.data || [])
+      }
+    } catch (error) {
+      console.error('Erro ao buscar catálogo:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const filtered = products.filter((p) => {
     const matchCategory = activeCategory === 'Todos' || p.category === activeCategory
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
-                        p.description.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = (p.name || '').toLowerCase().includes(search.toLowerCase()) ||
+                        (p.description || '').toLowerCase().includes(search.toLowerCase())
     return matchCategory && matchSearch
   })
 
@@ -76,7 +84,12 @@ export default function Store() {
         </div>
 
         {/* Grid de Produtos */}
-        {filtered.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16 text-coffee-500 animate-pulse">
+            <p className="text-5xl mb-4">☕</p>
+            <p className="text-lg">Tirando o café do fogo... aguarde.</p>
+          </div>
+        ) : filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -85,7 +98,7 @@ export default function Store() {
         ) : (
           <div className="text-center py-16 text-coffee-400">
             <p className="text-5xl mb-4">🔍</p>
-            <p className="text-lg">Nenhum produto encontrado.</p>
+            <p className="text-lg">Nenhum produto encontrado na loja.</p>
           </div>
         )}
       </div>
