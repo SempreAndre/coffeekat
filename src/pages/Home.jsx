@@ -13,9 +13,9 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/backgrounds/coffeeteria.png')] bg-cover bg-center" />
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-10 left-10 text-8xl opacity-10 animate-pulse-soft">🐱</div>
-          <div className="absolute top-20 right-20 text-6xl opacity-10 animate-pulse-soft" style={{ animationDelay: '1s' }}>☕</div>
-          <div className="absolute bottom-20 left-1/3 text-7xl opacity-10 animate-pulse-soft" style={{ animationDelay: '0.5s' }}>🐈</div>
+          <div className="absolute top-10 left-10 text-8xl opacity-10 animate-pulse-soft"></div>
+          <div className="absolute top-20 right-20 text-6xl opacity-10 animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-20 left-1/3 text-7xl opacity-10 animate-pulse-soft" style={{ animationDelay: '0.5s' }}></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 py-24 md:py-36 text-center">
@@ -69,17 +69,17 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              emoji: '☕',
+              imgSrc: '/images/icons/CafesArtesanais.png',
               title: 'Cafés Artesanais',
               desc: 'Grãos selecionados e torrados com carinho para criar a xícara perfeita.',
             },
             {
-              emoji: '🐱',
+              imgSrc: '/images/icons/CompanhiaFelina.png',
               title: 'Companhia Felina',
               desc: 'Nossos gatinhos — um branco de olhos azuis e um cinza rajado — são a alma da casa.',
             },
             {
-              emoji: '🍰',
+              imgSrc: '/images/icons/DocesEspeciais.png',
               title: 'Doces Especiais',
               desc: 'Bolos, cookies e brownies feitos com ingredientes premium e muito amor.',
             },
@@ -89,7 +89,7 @@ export default function Home() {
               className="bg-white rounded-2xl p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               style={{ boxShadow: 'var(--shadow-card)', animationDelay: `${i * 0.15}s` }}
             >
-              <div className="text-5xl mb-4">{item.emoji}</div>
+              <img src={item.imgSrc} alt={item.title} className="w-20 h-20 mx-auto mb-4 object-contain" />
               <h3 className="text-xl font-bold text-coffee-700 mb-3">{item.title}</h3>
               <p className="text-coffee-500">{item.desc}</p>
             </div>
