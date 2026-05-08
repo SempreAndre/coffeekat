@@ -93,13 +93,32 @@ router.post('/products', async (req, res) => {
     let imageUrl = ''
     if (imageBase64) {
       try {
-        const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
-        const buffer = Buffer.from(base64Data, 'base64');
-        const fileName = `products/${Date.now()}-${name.replace(/\s+/g, '-').toLowerCase()}.jpg`
-        const blob = await put(fileName, buffer, { access: 'public', token: process.env.BLOB_READ_WRITE_TOKEN })
+        // Pega de data:image/png;base64,.... a string base
+        const matches = imageBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+        if (!matches || matches.length !== 3) {
+          return res.status(400).json({ error: 'FORMATO_IMAGEM', message: 'Formato base64 inválido.' })
+        }
+        
+        const mimeType = matches[1]
+        const base64Data = matches[2]
+        const buffer = Buffer.from(base64Data, 'base64')
+        const extension = mimeType.split('/')[1] || 'jpg'
+        
+        const fileName = `products/${Date.now()}-${name.replace(/\s+/g, '-').toLowerCase()}.${extension}`
+        
+        const blob = await put(fileName, buffer, { 
+          access: 'public', 
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+          contentType: mimeType 
+        })
+        
         imageUrl = blob.url
       } catch (uploadError) {
         console.error('❌ Erro no upload para Vercel Blob:', uploadError)
+        return res.status(500).json({ 
+          error: 'UPLOAD_FAILED', 
+          message: 'Falha ao salvar a imagem. Verifique se o BLOB_READ_WRITE_TOKEN está na Vercel e é válido: ' + uploadError.message 
+        })
       }
     }
 
